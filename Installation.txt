@@ -1,0 +1,10 @@
+Installation Method
+
+1) Copy New Plasma.set and Bitmaps folder to C:\Mach3
+
+2) Copy m3.m1s and m5.m1s files to C:\Mach3\macros\ ** profile you are using
+
+2) Use screenset the Mach3, click on top bar View – Load Screens, and then selecting the NewPlasma.set
+
+Thank you for using
+https://www.youtube.com/c/MehmetIbrahim

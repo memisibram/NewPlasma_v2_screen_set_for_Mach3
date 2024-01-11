@@ -1,0 +1,1 @@
+Dim PauseEnd, SafezPossitionDoSpinStop()PauseEnd = 0SafezPossition = 0PauseEnd = GetUserDRO(1007)SafezPossition = GetUserDRO(1008)If PauseEnd > 0 Then	SetUserLED(1017, 1)	Sleep(PauseEnd * 1000)	SetUserLED(1017, 0)End IfIf SafezPossition > 0 Then	SetUserLED(1018, 1)	Code "G00 Z" & (SafezPossition)	While IsMoving()	Sleep(100)	Wend	SetUserLED(1018, 0)End If
