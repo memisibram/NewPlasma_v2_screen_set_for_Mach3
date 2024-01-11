@@ -25,6 +25,9 @@ Version 2 of the NewPlasma display set for use with Mach3 plasma machines.
 - M05 M30
 
 Post processor file for generating code in the desired format if you are using the SheetCam programme: [Mach3 Plasma THC on off no Z.scpost](https://github.com/memisibram/NewPlasma_v2_set_for_Mach3/tree/main/SheetCam%20%20Post%20processor)
+- Sheetcam tool setup
+
+![](https://github.com/memisibram/NewPlasma_v2_set_for_Mach3/blob/main/sheetcamtoolset.png)
 
 #### Images
 ![](https://github.com/memisibram/NewPlasma_v2_set_for_Mach3/blob/main/Bitmaps/NewPlasma/PlasmaMain.jpg)
