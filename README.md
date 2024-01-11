@@ -27,7 +27,9 @@ Version 2 of the NewPlasma display set for use with Mach3 plasma machines.
 Post processor file for generating code in the desired format if you are using the SheetCam programme: Mach3 Plasma THC on off no Z.scpost 
 
 #### Images
-
+![](https://github.com/memisibram/NewPlasma_v2_set_for_Mach3/blob/main/Bitmaps/NewPlasma/PlasmaMain.jpg)
+![](https://github.com/memisibram/NewPlasma_v2_set_for_Mach3/blob/main/Bitmaps/NewPlasma/PlasmaMainFull.jpg)
+![](https://github.com/memisibram/NewPlasma_v2_set_for_Mach3/blob/main/Bitmaps/NewPlasma/bg_angle_fin.jpg)
 
 ### License GNU GPL v3.0
 
