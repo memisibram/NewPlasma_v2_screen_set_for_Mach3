@@ -1,0 +1,200 @@
+--************************************************
+--*** Set these values up to suit your machine ***
+--************************************************
+
+--Kesici bu yarýçapýn altýnda köþelerde yavaþlayacak ve THC'yi kapatacaktýr
+--The cutter will slow down for corners and turn off THC below this radius
+slowRadius = 15
+
+--Kesicinin köþelerde minimum yavaþlama hýzý.
+--Bu bir ölçek faktörüdür. Örneðin 0.5 = mevcut ilerleme hýzýnýn %50'si (slowPercent = 1 yavaþlama yok)
+--Minimum slow down speed.
+--This is a scale factor. For instance 0.5 = 50% of the current feed rate (slowPercent = 1 no slow)
+slowPercent = 0.5
+
+--THC açma ve kapama kodlarý. THC kontrolünü istemiyorsanýz nil kullanýn, örneðin:
+--THC on and off codes. Use nil if you don't want THC control e.g:
+thcOnCode = nil
+thcOffCode = nil
+
+--M667 ve M666'yý kullanan baþka bir örnek
+--here is another example that use M667 and M666
+--thcOnCode = " M667"
+--thcOffCode = " M666"
+
+--M11P2 ve M10P2'yý kullanan baþka bir örnek
+--here is another example that use M11P2 andM10P2
+--thcOnCode = " M11P2"
+--thcOffCode = " M10P2"
+
+--Torch on code
+torchOn = " M03"
+--Torch off code
+torchOff = " M05"
+
+
+
+--************************************************
+--***           End of settings                ***
+--************************************************
+
+
+function OnAbout(event)
+   ctrl = event:GetTextCtrl()
+   ctrl:AppendText("Designed for use with Mach3 and NewPlasma v2 screen set, no Z\n")
+   ctrl:AppendText("\n")
+   ctrl:AppendText("Modal G codes and coordinates\n")
+   ctrl:AppendText("Comments enclosed with ( and )\n")
+   ctrl:AppendText("M03/M05 turn the torch on/off\n")
+   ctrl:AppendText("Incremental IJ\n")
+   ctrl:AppendText("SlowRadius - slow down below this radius\n")
+   ctrl:AppendText("SlowPercent - scale factor to slow down\n")
+end
+
+
+--   created 9/1/24
+--   Based on plasma1.post
+
+
+post.DefineVariable("slowRadius",sc.unitLINEAR,-1e17,1e17)
+post.DefineVariable("slowPercent",sc.unitPERCENT,-1e17,1e17)
+
+function OnInit()
+   
+   post.SetCommentChars ("()", "[]")  --make sure ( and ) characters do not appear in system text
+   post.Text (" (Filename: ", fileName, ")\n")
+   post.Text (" (Post processor: ", postName, ")\n")
+   post.Text (" (Date: ", date, ")\n")
+   if(scale == metric) then
+      post.Text (" G21 (Units: Metric)\n") --metric mode
+   else
+      post.Text (" G20 (Units: Inches)\n") --inch mode
+   end
+   post.Text (" F1\n G53 G90 G40 G91.1\n")
+   bigArcs = 1 --stitch arc segments together
+   minArcSize = 0.05 --arcs smaller than this are converted to moves
+   --minArcSize = 0.2 --arcs smaller than this are converted to moves
+
+   thcstate = 1
+   ThcOff()
+end
+
+function OnNewLine()
+   post.Text ("N")
+   post.Number (lineNumber, "0000")
+   lineNumber = lineNumber + 10
+end
+
+
+function OnFinish()
+   OnRapid()
+   endX = 0
+   endY = 0
+   post.Text (torchOff .. " M30\n")
+end
+
+
+function OnRapid()
+   if(math.hypot(currentX - endX, currentY - endY) < 0.001) then return end
+   post.ModalText (" G00")
+   post.ModalNumber (" X", endX * scale, "0.0000")
+   post.ModalNumber (" Y", endY * scale, "0.0000")
+   post.Eol()
+end
+
+function OnMove()
+   if(math.hypot(currentX - endX, currentY - endY) < 0.001) then return end
+   local len = math.hypot(endX - currentX , endY - currentY)
+   if(len > slowRadius) then
+      ThcOn()
+   end
+   post.ModalText (" G01")
+   post.ModalNumber (" X", endX * scale, "0.0000")
+   post.ModalNumber (" Y", endY * scale, "0.0000")
+   post.ModalNumber (" F", feedRate * scale, "0.0###")
+   post.Eol()
+end
+
+function OnArc()
+   local radius = math.hypot(currentX - arcCentreX, currentY - arcCentreY)
+   if (radius < slowRadius) and (math.abs(arcAngle) > 0.5) then
+      feed = (radius / slowRadius)
+      if(feed < slowPercent) then
+         feed = slowPercent
+      end
+      feed = feed * feedRate
+      ThcOff()
+   else
+      feed = feedRate
+      ThcOn()
+   end
+   if(arcAngle <0) then
+      post.ModalText (" G03")
+   else
+      post.ModalText (" G02")
+   end
+   post.ModalNumber (" X", endX * scale, "0.0000")
+   post.ModalNumber (" Y", endY * scale, "0.0000")
+   post.Text (" I")
+   post.Number ((arcCentreX - currentX) * scale, "0.0000")
+   post.Text (" J")
+   post.Number ((arcCentreY - currentY) * scale, "0.0000")
+   post.ModalNumber (" F", feed * scale, "0.0###")
+   post.Eol()
+end
+
+--function OnArc()
+--  post.ArcAsMoves(0.1)
+--end
+
+function ThcOff()
+   if(not thcOffCode) then return end
+   if(thcstate == 1) then
+      thcstate = 0
+      post.Text(thcOffCode)
+      post.Text(" (THC off)\n");
+   end
+end
+
+function ThcOn()
+   if(not thcOnCode) then return end
+   if(thcstate ==0) then
+      thcstate = 1
+      post.Text(thcOnCode)
+      post.Text(" (THC on)\n");
+      return
+   end
+   if(thcstate == 2) then
+      thcstate = 0
+   end
+end
+
+
+function OnPenDown()
+   post.Text ("\n" .. torchOn .. "\n")
+--   thcstate = 2 --leave THC off for plunge move
+end
+
+function OnPenUp()
+   post.Text (torchOff .. "\n")
+end
+
+
+function OnNewOperation()
+   post.Text (" (Oprt: ", operationName, ")\n")
+end
+
+function OnToolChange()
+end
+
+function OnNewPart()
+   post.Text(" (Part: ",partName,")\n");
+end
+
+function OnDrill()
+   OnRapid()
+   OnPenDown()
+   OnMove()
+   OnPenUp()
+   OnRapid()
+end
