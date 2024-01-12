@@ -7,7 +7,7 @@ Version 2 of the NewPlasma display set for use with Mach3 plasma machines.
   - Finding m3 in G code feature, you will be able to search m3 code after / before the current line
   - Jog Rate scroll bar added to home page
 
- - Video: https://www.youtube.com/@MehmetIbrahim
+ - Video: https://youtu.be/4WrAb9kqNBs
 
 #### G code example
 - G21 (Units: Metric)
