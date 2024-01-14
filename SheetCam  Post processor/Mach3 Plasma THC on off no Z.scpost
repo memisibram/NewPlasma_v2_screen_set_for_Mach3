@@ -2,27 +2,27 @@
 --*** Set these values up to suit your machine ***
 --************************************************
 
---Kesici bu yarýçapýn altýnda köþelerde yavaþlayacak ve THC'yi kapatacaktýr
+--Kesici bu yaricapin altinda koselerde yavaslayacak ve THC'yi kapatacaktir
 --The cutter will slow down for corners and turn off THC below this radius
 slowRadius = 15
 
---Kesicinin köþelerde minimum yavaþlama hýzý.
---Bu bir ölçek faktörüdür. Örneðin 0.5 = mevcut ilerleme hýzýnýn %50'si (slowPercent = 1 yavaþlama yok)
+--Kesicinin koselerde minimum yavaslama hizi.
+--Bu bir olcek faktorudur. ornegin 0.5 = mevcut ilerleme hizinin %50'si (slowPercent = 1 yavaslama yok)
 --Minimum slow down speed.
 --This is a scale factor. For instance 0.5 = 50% of the current feed rate (slowPercent = 1 no slow)
-slowPercent = 0.5
+slowPercent = 1
 
---THC açma ve kapama kodlarý. THC kontrolünü istemiyorsanýz nil kullanýn, örneðin:
+--THC acma ve kapama kodlari. THC kontrolunu istemiyorsaniz nil kullanin, ornegin:
 --THC on and off codes. Use nil if you don't want THC control e.g:
 thcOnCode = nil
 thcOffCode = nil
 
---M667 ve M666'yý kullanan baþka bir örnek
+--M667 ve M666'yi kullanan baska bir ornek
 --here is another example that use M667 and M666
 --thcOnCode = " M667"
 --thcOffCode = " M666"
 
---M11P2 ve M10P2'yý kullanan baþka bir örnek
+--M11P2 ve M10P2'yi kullanan baska bir ornek
 --here is another example that use M11P2 andM10P2
 --thcOnCode = " M11P2"
 --thcOffCode = " M10P2"
