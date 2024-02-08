@@ -41,4 +41,5 @@ Post processor file for generating code in the desired format if you are using t
 ### Donation
 
 Maybe you'd like to donate for a coffee
-  -  Paypal: memisibram@gmail.com
+  -  Paypal: memisibram@gmail.com or 
+https://www.paypal.me/memisibram
